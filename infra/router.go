@@ -65,6 +65,12 @@ func SetupServer(s *gorm.DB) Server {
 		{
 			books.Use(middleware.JwtAuth()).POST("", bookCtrl.CreateBook)
 		}
+
+		contentCtrl := controller.NewContentController(s)
+		contents := v1.Group("/contents")
+		{
+			contents.POST("", contentCtrl.CreateContent)
+		}
 	}
 
 	// health check
