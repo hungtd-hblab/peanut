@@ -24,6 +24,27 @@ definitions:
       title:
         type: string
     type: object
+  domain.CreateContentResp:
+    properties:
+      aspect_ratio:
+        type: string
+      category:
+        type: string
+      description:
+        type: string
+      file:
+        type: string
+      id:
+        type: integer
+      play_time:
+        type: string
+      resolution:
+        type: integer
+      tag:
+        type: string
+      title:
+        type: string
+    type: object
   domain.ErrorDetail:
     properties:
       error_code:
@@ -112,6 +133,21 @@ definitions:
       username:
         type: string
     type: object
+  multipart.FileHeader:
+    properties:
+      filename:
+        type: string
+      header:
+        $ref: '#/definitions/textproto.MIMEHeader'
+      size:
+        type: integer
+    type: object
+  textproto.MIMEHeader:
+    additionalProperties:
+      items:
+        type: string
+      type: array
+    type: object
 host: localhost:8080
 info:
   contact: {}
@@ -157,6 +193,61 @@ paths:
       summary: Create book
       tags:
       - book
+  /v1/contents:
+    post:
+      consumes:
+      - application/json
+      description: Create New Content
+      parameters:
+      - in: formData
+        name: aspectRatio
+        type: string
+      - in: formData
+        name: category
+        required: true
+        type: string
+      - in: formData
+        name: description
+        required: true
+        type: string
+      - in: formData
+        name: playTime
+        required: true
+        type: string
+      - in: formData
+        name: resolution
+        type: integer
+      - in: formData
+        name: tag
+        required: true
+        type: string
+      - in: formData
+        name: title
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/domain.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.CreateContentResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: CreateContent
+      tags:
+      - content
   /v1/users/{id}:
     get:
       consumes:

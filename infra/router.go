@@ -73,6 +73,9 @@ func SetupServer(s *gorm.DB) Server {
 		}
 	}
 
+	// Serve static file
+	r.Static("/public/uploads", "./public/uploads")
+
 	// health check
 	r.GET("api/health", func(c *gin.Context) {
 		c.Status(http.StatusOK)
