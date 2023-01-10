@@ -3,8 +3,8 @@ CREATE TABLE IF NOT EXISTS users (
 	username text NULL,
 	email text NULL,
 	password text NULL,
-	created_at timestamptz NULL,
-	updated_at timestamptz NULL,
-	deleted_at timestamptz NULL,
+	created_at TIMESTAMPTZ NULL,
+	updated_at TIMESTAMPTZ NULL,
+	deleted_at TIMESTAMPTZ NULL,
 	CONSTRAINT users_pkey PRIMARY KEY (id)
 );

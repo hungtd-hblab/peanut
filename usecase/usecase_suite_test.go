@@ -18,7 +18,10 @@ import (
 var ctx context.Context
 var db *gorm.DB
 var userRepo *mock.MockUserRepo
+var contentRepo *mock.MockContentRepo
+
 var userUc usecase.UserUsecase
+var contentUc usecase.ContentUsecase
 
 func TestUsecase(t *testing.T) {
 	RegisterFailHandler(Fail)
@@ -38,6 +41,10 @@ var _ = BeforeSuite(func() {
 
 	ctrl := gomock.NewController(GinkgoT())
 	defer ctrl.Finish()
+
 	userRepo = mock.NewMockUserRepo(ctrl)
 	userUc = usecase.NewUserUsecase(userRepo)
+
+	contentRepo = mock.NewMockContentRepo(ctrl)
+	contentUc = usecase.NewContentUsecase(contentRepo)
 })

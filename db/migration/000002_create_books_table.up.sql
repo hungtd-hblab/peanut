@@ -1,9 +1,9 @@
 CREATE TABLE IF NOT EXISTS books (
-	id bigserial NOT NULL,
-	title text NULL,
-	description text NULL,
-	created_at timestamptz NULL,
-	updated_at timestamptz NULL,
-	deleted_at timestamptz NULL,
+	id BIGSERIAL NOT NULL,
+	title TEXT NULL,
+	description TEXT NULL,
+	created_at TIMESTAMPTZ NULL,
+	updated_at TIMESTAMPTZ NULL,
+	deleted_at TIMESTAMPTZ NULL,
 	CONSTRAINT books_pkey PRIMARY KEY (id)
 );

@@ -65,7 +65,16 @@ func SetupServer(s *gorm.DB) Server {
 		{
 			books.Use(middleware.JwtAuth()).POST("", bookCtrl.CreateBook)
 		}
+
+		contentCtrl := controller.NewContentController(s)
+		contents := v1.Group("/contents")
+		{
+			contents.POST("", contentCtrl.CreateContent)
+		}
 	}
+
+	// Serve static file
+	r.Static("/public/uploads", "./public/uploads")
 
 	// health check
 	r.GET("api/health", func(c *gin.Context) {

@@ -3,6 +3,7 @@ package usecase_test
 import (
 	"fmt"
 
+	"github.com/golang/mock/gomock"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
@@ -10,17 +11,20 @@ import (
 )
 
 var _ = Describe("User", func() {
-	var u, createdU domain.User
+	var (
+		createdU domain.User
+		u        domain.SignupReq
+	)
 	BeforeEach(func() {
-		u = domain.User{
-			ID:       1,
+		u = domain.SignupReq{
 			Username: "hung",
 			Email:    "hung@example.com",
 		}
+
 		createdU = domain.User{}
 	})
 
-	Describe("API Create", func() {
+	Describe("API Sign up", func() {
 		Context("with existed username", func() {
 			It("should be error", func() {
 				// TODO: fill in your test in this case
@@ -29,22 +33,26 @@ var _ = Describe("User", func() {
 		Context("with new user", func() {
 			It("should be success", func() {
 				// prepare
-				userRepo.EXPECT().CreateUser(ctx, u).Return(&u, nil)
+				userRepo.EXPECT().GetUserByUsername(u.Username).Return(nil, nil)
+				userRepo.EXPECT().CreateUser(gomock.All()).Return(&createdU, nil)
 				// do
-				err := userUc.CreateUser(ctx, u)
+				resp, err := userUc.SignUp(ctx, u)
 				// check
 				Expect(err).To(BeNil())
+				Expect(resp).NotTo(BeNil())
 			})
 		})
 		Context("with database error response", func() {
 			It("should be err", func() {
 				// prepare
-				userRepo.EXPECT().CreateUser(ctx, u).
+				userRepo.EXPECT().GetUserByUsername(u.Username).Return(nil, nil)
+				userRepo.EXPECT().CreateUser(gomock.Any()).
 					Return(nil, fmt.Errorf("database error"))
 				// do
-				err := userUc.CreateUser(ctx, u)
+				resp, err := userUc.SignUp(ctx, u)
 				// check
 				Expect(err).NotTo(BeNil())
+				Expect(resp).To(BeZero())
 			})
 		})
 	})
