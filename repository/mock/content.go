@@ -48,3 +48,18 @@ func (mr *MockContentRepoMockRecorder) CreateContent(cnt interface{}) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateContent", reflect.TypeOf((*MockContentRepo)(nil).CreateContent), cnt)
 }
+
+// GetContents mocks base method.
+func (m *MockContentRepo) GetContents(filter domain.GetContentsReq) ([]domain.Content, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetContents", filter)
+	ret0, _ := ret[0].([]domain.Content)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetContents indicates an expected call of GetContents.
+func (mr *MockContentRepoMockRecorder) GetContents(filter interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetContents", reflect.TypeOf((*MockContentRepo)(nil).GetContents), filter)
+}

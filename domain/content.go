@@ -39,3 +39,17 @@ type CreateContentResp struct {
 	Category    string    `json:"category"`
 	File        string    `json:"file"`
 }
+
+type GetContentsReq struct {
+	Title    string   `form:"title"`
+	Tag      []string `form:"tag"`
+	Category string   `form:"category"`
+	Limit    int      `form:"limit"`
+	Offset   int      `form:"offset"`
+	SortBy   string   `form:"sort_by"`
+	SortType string   `form:"sort_type"`
+}
+
+type GetContentsResp struct {
+	Contents []Content `json:"contents"`
+}

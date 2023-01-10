@@ -1,5 +1,32 @@
 basePath: /api
 definitions:
+  domain.Content:
+    properties:
+      aspectRatio:
+        type: string
+      category:
+        type: string
+      createdAt:
+        type: string
+      deletedAt:
+        type: string
+      description:
+        type: string
+      filePath:
+        type: string
+      id:
+        type: integer
+      playTime:
+        type: string
+      resolution:
+        type: integer
+      tag:
+        type: string
+      title:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   domain.CreateBookReq:
     properties:
       author:
@@ -63,6 +90,13 @@ definitions:
       error_details:
         items:
           $ref: '#/definitions/domain.ErrorDetail'
+        type: array
+    type: object
+  domain.GetContentsResp:
+    properties:
+      contents:
+        items:
+          $ref: '#/definitions/domain.Content'
         type: array
     type: object
   domain.LoginReq:
@@ -194,6 +228,55 @@ paths:
       tags:
       - book
   /v1/contents:
+    get:
+      consumes:
+      - application/json
+      description: Get Content
+      parameters:
+      - in: query
+        name: category
+        type: string
+      - in: query
+        name: limit
+        type: integer
+      - in: query
+        name: offset
+        type: integer
+      - in: query
+        name: sortBy
+        type: string
+      - in: query
+        name: sortType
+        type: string
+      - in: query
+        name: tag
+        type: string
+      - in: query
+        name: title
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/domain.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/domain.GetContentsResp'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/domain.ErrorResponse'
+      summary: GetContents
+      tags:
+      - content
     post:
       consumes:
       - application/json
