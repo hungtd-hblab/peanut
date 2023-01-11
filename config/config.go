@@ -6,6 +6,13 @@ import (
 	"strconv"
 )
 
+const (
+	DefaultLimit    int    = 50
+	DefaultOffset   int    = 0
+	DefaultSortType string = "DESC"
+	DefaultSortBy   string = "created_at"
+)
+
 var (
 	Locale       string
 	JwtSecretKey string

@@ -70,6 +70,7 @@ func SetupServer(s *gorm.DB) Server {
 		contents := v1.Group("/contents")
 		{
 			contents.POST("", contentCtrl.CreateContent)
+			contents.GET("", contentCtrl.GetContents)
 		}
 	}
 

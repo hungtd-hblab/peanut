@@ -16,3 +16,10 @@ type ErrorDetail struct {
 	ErrorCode    string `json:"error_code"`
 	ErrorMessage string `json:"error_message"`
 }
+
+type FilterParam struct {
+	Limit    int    `form:"limit"`
+	Offset   int    `form:"offset"`
+	SortBy   string `form:"sort_by"`
+	SortType string `form:"sort_type"`
+}

@@ -20,7 +20,7 @@ func NewContentController(db *gorm.DB) *ContentController {
 	}
 }
 
-// SignUp godoc
+// CreateContent godoc
 //
 //	@Summary		CreateContent
 //	@Description	Create New Content
@@ -45,6 +45,32 @@ func (c *ContentController) CreateContent(ctx *gin.Context) {
 	}
 
 	resp, err := c.Usecase.CreateContent(ctx, req, filePath)
+	if checkError(ctx, err) {
+		return
+	}
+
+	response.OK(ctx, resp)
+}
+
+// GetContents godoc
+//
+//	@Summary		GetContents
+//	@Description	Get Content
+//	@Tags			content
+//	@Accept			json
+//	@Produce		json
+//	@Param			param	query	domain.GetContentsReq	true	"Get content request"
+//	@Success		200	{object}	domain.Response{data=domain.GetContentsResp}
+//	@Failure		400	{object}	domain.ErrorResponse
+//	@Failure		500	{object}	domain.ErrorResponse
+//	@Router			/v1/contents [get]
+func (c *ContentController) GetContents(ctx *gin.Context) {
+	req := domain.GetContentsReq{}
+	if !bindQueryParams(ctx, &req) {
+		return
+	}
+
+	resp, err := c.Usecase.GetContents(ctx, req)
 	if checkError(ctx, err) {
 		return
 	}
