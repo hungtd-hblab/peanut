@@ -11,10 +11,11 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func GenerateToken(userID int) (string, error) {
+func GenerateToken(userID int, roles []string) (string, error) {
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
 	claims["user_id"] = userID
+	claims["roles"] = roles
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(config.JwtTTL)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -53,6 +54,30 @@ func ExtractUserID(ctx *gin.Context) (int, error) {
 		return int(uid), nil
 	}
 	return 0, nil
+}
+
+func ExtractRoles(ctx *gin.Context) ([]string, error) {
+	tokenString := extractToken(ctx)
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.JwtSecretKey), nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok && token.Valid {
+		r := claims["roles"].([]interface{})
+		roles := make([]string, len(r))
+		for i, v := range r {
+			roles[i] = v.(string)
+		}
+		return roles, nil
+	}
+
+	return nil, nil
 }
 
 func extractToken(ctx *gin.Context) string {

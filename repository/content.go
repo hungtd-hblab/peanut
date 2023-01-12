@@ -33,10 +33,12 @@ func (r *contentRepo) CreateContent(cnt domain.Content) (content *domain.Content
 }
 
 func (r *contentRepo) GetContents(filter domain.GetContentsReq) (contents []domain.Content, err error) {
-	query := r.DB.Debug().
-		Where("title LIKE ?", fmt.Sprintf("%%%v%%", filter.Title)).
-		Where("category = ?", filter.Category)
+	query := r.DB.
+		Where("title LIKE ?", fmt.Sprintf("%%%v%%", filter.Title))
 
+	if filter.Category != "" {
+		query.Where("category = ?", filter.Category)
+	}
 	if filter.Tag != nil {
 		query.Where("tag IN ?", filter.Tag)
 	}

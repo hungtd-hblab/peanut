@@ -61,16 +61,16 @@ func SetupServer(s *gorm.DB) Server {
 		}
 
 		bookCtrl := controller.NewBookController(s)
-		books := v1.Group("/books")
+		books := v1.Group("/books", middleware.JwtAuth())
 		{
-			books.Use(middleware.JwtAuth()).POST("", bookCtrl.CreateBook)
+			books.Use(middleware.Authorize("post", "book")).POST("", bookCtrl.CreateBook)
 		}
 
 		contentCtrl := controller.NewContentController(s)
-		contents := v1.Group("/contents")
+		contents := v1.Group("/contents", middleware.JwtAuth())
 		{
-			contents.POST("", contentCtrl.CreateContent)
-			contents.GET("", contentCtrl.GetContents)
+			contents.Use(middleware.Authorize("post", "content")).POST("", contentCtrl.CreateContent)
+			contents.Use(middleware.Authorize("get", "content")).GET("", contentCtrl.GetContents)
 		}
 	}
 
