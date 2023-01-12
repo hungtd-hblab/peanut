@@ -17,6 +17,7 @@ func JwtAuth() gin.HandlerFunc {
 			ctx.Abort()
 			return
 		}
+
 		ctx.Next()
 	}
 }

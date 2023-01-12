@@ -1,0 +1,19 @@
+{
+  "resources": {
+    "user": {
+      "get": ["admin", "normal_user"],
+      "post": ["admin"],
+      "del": ["admin"]
+    },
+    "book": {
+      "get": ["admin", "normal_user", "guest"],
+      "post": ["admin", "normal_user"],
+      "del": ["admin", "normal_user"]
+    },
+    "content": {
+      "get": ["admin", "normal_user", "guest"],
+      "post": ["admin", "normal_user"],
+      "del": ["admin"]
+    }
+  }
+}

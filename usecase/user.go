@@ -8,6 +8,7 @@ import (
 	"peanut/pkg/crypto"
 	"peanut/pkg/jwt"
 	"peanut/repository"
+	"strings"
 )
 
 type UserUsecase interface {
@@ -45,13 +46,17 @@ func (uc *userUsecase) SignUp(ctx context.Context, req domain.SignupReq) (resp d
 		Email:       req.Email,
 	}
 	u.Password = crypto.HashString(req.Password)
+	u.Roles = strings.Join(req.Roles, ",")
+
 	user, err := uc.UserRepo.CreateUser(u)
 	if err != nil {
 		err = fmt.Errorf("[usecase.userUsecase.CreateUser] failed: %w", err)
 		return
 	}
 
-	token, err := jwt.GenerateToken(user.ID)
+	roles := strings.Split(user.Roles, ",")
+
+	token, err := jwt.GenerateToken(user.ID, roles)
 	if err != nil {
 		err = fmt.Errorf("[usecase.userUsecase.CreateUser] failed: %w", err)
 		return
@@ -77,8 +82,9 @@ func (uc *userUsecase) Login(ctx context.Context, lr domain.LoginReq) (lrs domai
 		err = apierrors.NewErrorf(apierrors.LoginFailed, "username or password invalid")
 		return
 	}
+	roles := strings.Split(user.Roles, ",")
 
-	token, err := jwt.GenerateToken(user.ID)
+	token, err := jwt.GenerateToken(user.ID, roles)
 	if err != nil {
 		err = fmt.Errorf("[usercase.userUsecase.Login] failed: %w", err)
 		return
