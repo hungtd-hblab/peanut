@@ -6,6 +6,7 @@ import (
 	"peanut/repository"
 	"peanut/usecase"
 
+	"github.com/casbin/casbin/v2"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -14,9 +15,9 @@ type UserController struct {
 	Usecase usecase.UserUsecase
 }
 
-func NewUserController(db *gorm.DB) *UserController {
+func NewUserController(db *gorm.DB, e *casbin.Enforcer) *UserController {
 	return &UserController{
-		Usecase: usecase.NewUserUsecase(repository.NewUserRepo(db)),
+		Usecase: usecase.NewUserUsecase(repository.NewUserRepo(db), e),
 	}
 }
 
