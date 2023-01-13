@@ -48,9 +48,11 @@ func (r *userRepo) GetUserByUsername(username string) (*domain.User, error) {
 
 func (r *userRepo) CreateUser(u domain.User) (user *domain.User, err error) {
 	user = &domain.User{
-		Username: u.Username,
-		Email:    u.Email,
-		Password: u.Password,
+		Username:    u.Username,
+		DisplayName: u.DisplayName,
+		Email:       u.Email,
+		Password:    u.Password,
+		Roles:       u.Roles,
 	}
 	result := r.DB.Create(user)
 

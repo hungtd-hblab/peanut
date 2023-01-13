@@ -8,6 +8,8 @@ import (
 	"peanut/controller"
 	"peanut/middleware"
 
+	"github.com/casbin/casbin/v2"
+	gormadapter "github.com/casbin/gorm-adapter/v3"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -35,6 +37,9 @@ func SetupServer(s *gorm.DB) Server {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.Recovery())
 
+	// Casbin config
+	e := setupEnforcer(s)
+
 	// Custom middleware
 	r.Use(middleware.HandleError)
 	r.NoRoute(middleware.HandleNoRoute)
@@ -53,7 +58,7 @@ func SetupServer(s *gorm.DB) Server {
 	// Config route
 	v1 := r.Group("api/v1")
 	{
-		userCtrl := controller.NewUserController(s)
+		userCtrl := controller.NewUserController(s, e)
 		users := v1.Group("/users")
 		{
 			users.POST("/signup", userCtrl.SignUp)
@@ -67,10 +72,10 @@ func SetupServer(s *gorm.DB) Server {
 		}
 
 		contentCtrl := controller.NewContentController(s)
-		contents := v1.Group("/contents")
+		contents := v1.Group("/contents").Use(middleware.JwtAuth())
 		{
 			contents.POST("", contentCtrl.CreateContent)
-			contents.GET("", contentCtrl.GetContents)
+			contents.Use(middleware.Authorize("content", "get", e)).GET("", contentCtrl.GetContents)
 		}
 	}
 
@@ -90,4 +95,12 @@ func SetupServer(s *gorm.DB) Server {
 		Store:  s,
 		Router: r,
 	}
+}
+
+func setupEnforcer(db *gorm.DB) *casbin.Enforcer {
+	adapter, _ := gormadapter.NewAdapterByDB(db)
+	e, _ := casbin.NewEnforcer("./config/rbac_model.conf", adapter)
+	e.LoadPolicy()
+
+	return e
 }

@@ -8,6 +8,10 @@ import (
 	"peanut/pkg/crypto"
 	"peanut/pkg/jwt"
 	"peanut/repository"
+	"strconv"
+	"strings"
+
+	"github.com/casbin/casbin/v2"
 )
 
 type UserUsecase interface {
@@ -17,11 +21,13 @@ type UserUsecase interface {
 
 type userUsecase struct {
 	UserRepo repository.UserRepo
+	E        *casbin.Enforcer
 }
 
-func NewUserUsecase(r repository.UserRepo) UserUsecase {
+func NewUserUsecase(r repository.UserRepo, e *casbin.Enforcer) UserUsecase {
 	return &userUsecase{
 		UserRepo: r,
+		E:        e,
 	}
 }
 
@@ -45,7 +51,20 @@ func (uc *userUsecase) SignUp(ctx context.Context, req domain.SignupReq) (resp d
 		Email:       req.Email,
 	}
 	u.Password = crypto.HashString(req.Password)
+	u.Roles = strings.Join(req.Roles, ",")
+
 	user, err := uc.UserRepo.CreateUser(u)
+	if err != nil {
+		err = fmt.Errorf("[usecase.userUsecase.CreateUser] failed: %w", err)
+		return
+	}
+
+	uid := strconv.Itoa(user.ID)
+	roles := strings.Split(user.Roles, ",")
+	for _, r := range roles {
+		uc.E.AddRoleForUser(uid, r)
+	}
+	err = uc.E.SavePolicy()
 	if err != nil {
 		err = fmt.Errorf("[usecase.userUsecase.CreateUser] failed: %w", err)
 		return

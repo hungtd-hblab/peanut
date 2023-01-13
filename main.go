@@ -31,7 +31,7 @@ func main() {
 	dbClient := dbConnect()
 	server := infra.SetupServer(dbClient)
 	// Disable auto migration
-	// infra.Migration(dbClient)
+	infra.Migration(dbClient)
 
 	server.Router.Run(":8080")
 }

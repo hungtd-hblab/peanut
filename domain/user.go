@@ -6,6 +6,7 @@ type User struct {
 	DisplayName string
 	Email       string
 	Password    string
+	Roles       string
 }
 
 type LoginReq struct {
@@ -18,10 +19,11 @@ type LoginResp struct {
 }
 
 type SignupReq struct {
-	Username    string `json:"username" binding:"required" example:"hungtran" extensions:"x-order=1"`
-	DisplayName string `json:"display_name" binding:"required" example:"Hung Tran" extensions:"x-order=2"`
-	Email       string `json:"email" binding:"required,email" example:"hung@example.com" extensions:"x-order=3"`
-	Password    string `json:"password" binding:"required" example:"thisispassword" extensions:"x-order=4"`
+	Username    string   `json:"username" binding:"required" example:"hungtran" extensions:"x-order=1"`
+	DisplayName string   `json:"display_name" binding:"required" example:"Hung Tran" extensions:"x-order=2"`
+	Email       string   `json:"email" binding:"required,email" example:"hung@example.com" extensions:"x-order=3"`
+	Password    string   `json:"password" binding:"required" example:"thisispassword" extensions:"x-order=4"`
+	Roles       []string `json:"roles" binding:"required"  example:"admin" extensions:"x-order=4"`
 }
 
 type SignupResp struct {
