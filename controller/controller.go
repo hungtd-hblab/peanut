@@ -22,7 +22,9 @@ func bindJSON(ctx *gin.Context, obj interface{}) bool {
 	} else {
 		err = apierrors.New(apierrors.BadParams, err)
 	}
-	ctx.Error(err).SetType(gin.ErrorTypeBind)
+	if err := ctx.Error(err).SetType(gin.ErrorTypeBind); err != nil {
+		return false
+	}
 
 	return false
 }
@@ -39,7 +41,9 @@ func bindQueryParams(ctx *gin.Context, obj interface{}) bool {
 	} else {
 		err = apierrors.New(apierrors.BadParams, err)
 	}
-	ctx.Error(err).SetType(gin.ErrorTypeBind)
+	if err := ctx.Error(err).SetType(gin.ErrorTypeBind); err != nil {
+		return false
+	}
 
 	return false
 }
@@ -55,7 +59,9 @@ func bind(ctx *gin.Context, obj interface{}) bool {
 	} else {
 		err = apierrors.New(apierrors.BadParams, err)
 	}
-	ctx.Error(err).SetType(gin.ErrorTypeBind)
+	if err := ctx.Error(err).SetType(gin.ErrorTypeBind); err != nil {
+		return false
+	}
 
 	return false
 }
