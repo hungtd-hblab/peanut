@@ -1,5 +1,5 @@
-name: Run auto test
-run-name: Test ${{ github.actor }}'s commit
+name: Verify code
+run-name: Check ${{ github.actor }}'s commit
 on: [push]
 jobs:
   lint:
@@ -39,9 +39,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # - uses: actions/setup-go@v3
-      #   with:
-      #     go-version: ^1.19
       - name: Scan for Vulnerabilities in Code
         uses: Templum/govulncheck-action@v0.0.9
         with:

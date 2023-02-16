@@ -33,7 +33,9 @@ func main() {
 	// Disable auto migration
 	// infra.Migration(dbClient)
 
-	server.Router.Run(":8080")
+	if err := server.Router.Run(":8080"); err != nil {
+		fmt.Println("Server start failed: %w", err)
+	}
 }
 
 func dbConnect() *gorm.DB {
